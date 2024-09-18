@@ -7,11 +7,11 @@ const app = express();
 
 /// CORS configuration with specific origin
 const corsOptions = {
-  origin: '*',  // Replace with your Vercel app URL
+  origin: 'https://readmegenie.vercel.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  optionsSuccessStatus: 200 // This line is correct
+  optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
@@ -23,7 +23,7 @@ const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 // OPTIONS preflight request handler
 app.options('/api/github/callback', cors(corsOptions));
 
-app.post('/api/github/callback', async (req, res) => {
+app.post('/api/github/callback', cors(corsOptions), async (req, res) => {
   const { code } = req.body;
 
   try {

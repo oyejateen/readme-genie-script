@@ -4,16 +4,24 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors({
+
+// CORS configuration
+const corsOptions = {
   origin: ['http://localhost:3000', 'https://readmegenie.vercel.app'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+  credentials: true,
+  optionsSuccessStatus: 200 // यह लाइन जोडें
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+// OPTIONS प्रीफ्लाइट रिक्वेस्ट के लिए एक नया रूट जोड़ें
+app.options('/api/github/callback', cors(corsOptions));
 
 app.post('/api/github/callback', async (req, res) => {
   const { code } = req.body;
